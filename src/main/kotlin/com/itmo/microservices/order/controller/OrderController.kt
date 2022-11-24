@@ -1,7 +1,7 @@
 package com.itmo.microservices.order.controller
 
 import com.itmo.microservices.order.api.OrderAggregate
-import com.itmo.microservices.order.logic.Order
+import com.itmo.microservices.order.logic.OrderAggregateState
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.web.bind.annotation.*
 import ru.quipy.core.EventSourcingService
@@ -10,10 +10,10 @@ import java.util.*
 @RestController
 @RequestMapping("/orders")
 class OrderController(
-    val orderEsService: EventSourcingService<UUID, OrderAggregate, Order>
+    val orderEsService: EventSourcingService<UUID, OrderAggregate, OrderAggregateState>
 ) {
     @PostMapping
-    fun createOrder(@RequestHeader(AUTHORIZATION) auth: String) = orderEsService.create { it.createOrder() }
+    fun createOrder(@RequestHeader(AUTHORIZATION) auth: String) = orderEsService.create { it.createOrder(auth) }
 
     @GetMapping("/{order_id}")
     fun getOrder(
