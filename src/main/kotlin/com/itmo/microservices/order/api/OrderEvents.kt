@@ -70,31 +70,23 @@ data class OrderBookingCanceledEvent(
 //    name = ORDER_PAID
 // )
 //
-// @DomainEvent(name = ORDER_DELIVERY_STARTED)
-// data class OrderDeliveryStartedEvent(
-//    val orderId: UUID,
-// ) : Event<OrderAggregate>(
-//    name = ORDER_DELIVERY_STARTED
-// )
-//
-// @DomainEvent(name = ORDER_DELIVERY_FAILED)
-// data class OrderDeliveryFailedEvent(
-//    val orderId: UUID,
-// ) : Event<OrderAggregate>(
-//    name = ORDER_DELIVERY_FAILED
-// )
-//
-// @DomainEvent(name = ORDER_DELIVERY_COMPLETED)
-// data class OrderDeliveryCompletedEvent(
-//    val orderId: UUID,
-// ) : Event<OrderAggregate>(
-//    name = ORDER_DELIVERY_COMPLETED
-// )
-//
-// @DomainEvent(name = ORDER_DELIVERY_SLOT_UPDATED)
-// data class OrderDeliverySlotUpdatedEvent(
-//    val orderId: UUID,
-//    val slotInSec: Int,
-// ) : Event<OrderAggregate>(
-//    name = ORDER_DELIVERY_SLOT_UPDATED
-// )
+@DomainEvent(name = ORDER_DELIVERY_STARTED)
+data class OrderDeliveryStartedEvent(
+    val orderId: UUID,
+) : Event<OrderAggregate>(
+    name = ORDER_DELIVERY_STARTED
+)
+
+@DomainEvent(name = ORDER_DELIVERY_FAILED)
+data class OrderDeliveryFailedEvent(
+    val orderId: UUID,
+) : Event<OrderAggregate>(
+    name = ORDER_DELIVERY_FAILED
+)
+
+@DomainEvent(name = ORDER_DELIVERY_COMPLETED)
+data class OrderDeliveryCompletedEvent(
+    val orderId: UUID,
+) : Event<OrderAggregate>(
+    name = ORDER_DELIVERY_COMPLETED
+)

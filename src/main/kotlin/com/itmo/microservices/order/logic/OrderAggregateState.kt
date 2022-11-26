@@ -37,6 +37,17 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
     fun bookOrder(orderId: UUID): OrderBookedEvent {
         return OrderBookedEvent(orderId)
     }
+    fun deliveryStartedOrder(orderId: UUID): OrderDeliveryStartedEvent {
+        return OrderDeliveryStartedEvent(orderId)
+    }
+
+    fun deliveryFailedOrder(orderId: UUID): OrderDeliveryFailedEvent {
+        return OrderDeliveryFailedEvent(orderId)
+    }
+
+    fun deliveryCompletedOrder(orderId: UUID): OrderDeliveryCompletedEvent {
+        return OrderDeliveryCompletedEvent(orderId)
+    }
 
     fun discardOrder(orderId: UUID): OrderBookingCanceledEvent {
         return OrderBookingCanceledEvent(orderId)
@@ -58,6 +69,19 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
         status = OrderStatus.BOOKED
     }
 
+    @StateTransitionFunc
+    fun deliveryStartedOrder(event: OrderDeliveryStartedEvent) {
+        status = OrderStatus.SHIPPING
+    }
+
+    @StateTransitionFunc
+    fun deliveryFailedOrder(event: OrderDeliveryFailedEvent) {
+        status = OrderStatus.REFUND
+    }
+    @StateTransitionFunc
+    fun deliveryCompletedOrder(event: OrderDeliveryCompletedEvent) {
+        status = OrderStatus.COMPLETED
+    }
     @StateTransitionFunc
     fun discardOrder(event: OrderBookingCanceledEvent) {
         status = OrderStatus.DISCARD
