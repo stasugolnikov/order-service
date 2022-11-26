@@ -18,7 +18,7 @@ class OrderController(
     @GetMapping("/{order_id}")
     fun getOrder(
         @PathVariable("order_id") orderId: UUID,
-        @RequestHeader(AUTHORIZATION) auth: String,
+        @RequestHeader(AUTHORIZATION) auth: String
     ) = orderEsService.getState(orderId)
 
     @PutMapping("/orders/{order_id}/items/{item_id}")
@@ -26,12 +26,26 @@ class OrderController(
         @PathVariable("order_id") orderId: UUID,
         @PathVariable("item_id") itemId: UUID,
         @RequestParam amount: Int,
-        @RequestHeader(AUTHORIZATION) auth: String,
+        @RequestHeader(AUTHORIZATION) auth: String
     ) = orderEsService.update(orderId) { it.addItemToOrder(orderId, itemId, amount) }
+
+    @DeleteMapping("/orders/{order_id}/items/{item_id}")
+    fun deleteItemToOrder(
+        @PathVariable("order_id") orderId: UUID,
+        @PathVariable("item_id") itemId: UUID,
+        @RequestParam amount: Int,
+        @RequestHeader(AUTHORIZATION) auth: String
+    ) = orderEsService.update(orderId) { it.deleteItemFromOrder(orderId, itemId, amount) }
 
     @PostMapping("/{order_id}/bookings")
     fun bookOrder(
         @PathVariable("order_id") orderId: UUID,
-        @RequestHeader(AUTHORIZATION) auth: String,
+        @RequestHeader(AUTHORIZATION) auth: String
     ) = orderEsService.update(orderId) { it.bookOrder(orderId) }
+
+    @DeleteMapping("/{order_id}/bookings")
+    fun discardOrder(
+        @PathVariable("order_id") orderId: UUID,
+        @RequestHeader(AUTHORIZATION) auth: String
+    ) = orderEsService.update(orderId) { it.discardOrder(orderId) }
 }

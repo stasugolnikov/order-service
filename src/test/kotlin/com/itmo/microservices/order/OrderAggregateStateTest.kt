@@ -21,7 +21,7 @@ class OrderAggregateStateTest {
         private val testId = UUID.randomUUID()
         private val userId = UUID.randomUUID()
         private val itemId = UUID.randomUUID()
-        private val itemAmount = 10
+        private const val itemAmount = 10
     }
 
     @Autowired
@@ -63,7 +63,7 @@ class OrderAggregateStateTest {
         }
         val state = orderESService.getState(addItemToOrder.orderId)!!
 
-        Assertions.assertEquals(itemAmount, state.getOrderItemsAmount().get(addItemToOrder.itemId))
+        Assertions.assertEquals(itemAmount, state.getOrderItemsAmount()[addItemToOrder.itemId])
     }
 
     @Test
