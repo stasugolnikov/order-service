@@ -14,7 +14,7 @@ const val ORDER_PAID = "ORDER_PAID_EVENT"
 const val ORDER_DELIVERY_STARTED = "ORDER_DELIVERY_STARTED_EVENT"
 const val ORDER_DELIVERY_FAILED = "ORDER_DELIVERY_FAILED_EVENT"
 const val ORDER_DELIVERY_COMPLETED = "ORDER_DELIVERY_COMPLETED_EVENT"
-
+const val ORDER_DELIVERY_SLOT_UPDATED = "ORDER_DELIVERY_SLOT_UPDATED_EVENT"
 
 @DomainEvent(name = ORDER_CREATED)
 data class OrderCreatedEvent(
@@ -26,9 +26,9 @@ data class OrderCreatedEvent(
 
 @DomainEvent(name = POSITION_ADDED_TO_ORDER)
 data class ItemAddedToOrderEvent(
-    val itemId: UUID,
-    val itemCount: UUID,
     val orderId: UUID,
+    val itemId: UUID,
+    val amount: Int,
 ) : Event<OrderAggregate>(
     name = POSITION_ADDED_TO_ORDER
 )
@@ -89,4 +89,12 @@ data class OrderDeliveryCompletedEvent(
     val orderId: UUID,
 ) : Event<OrderAggregate>(
     name = ORDER_DELIVERY_COMPLETED
+)
+
+@DomainEvent(name = ORDER_DELIVERY_SLOT_UPDATED)
+data class OrderDeliverySlotUpdatedEvent(
+    val orderId: UUID,
+    val slotInSec: Int,
+) : Event<OrderAggregate>(
+    name = ORDER_DELIVERY_SLOT_UPDATED
 )
