@@ -2,7 +2,6 @@ package com.itmo.microservices.order.logic
 
 import com.itmo.microservices.order.api.*
 import com.itmo.microservices.order.model.OrderStatus
-import com.itmo.microservices.order.model.PaymentLogRecord
 import ru.quipy.core.annotations.StateTransitionFunc
 import ru.quipy.domain.AggregateState
 import java.util.*
@@ -13,9 +12,7 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
 
     private var status: OrderStatus = OrderStatus.COLLECTING
     private var timeCreated: Long = System.currentTimeMillis()
-    private var deliveryDuration: Int? = null
     private var orderItemsAmount: MutableMap<UUID, Int> = mutableMapOf()
-    private var paymentHistory: List<PaymentLogRecord> = mutableListOf()
 
     override fun getId() = orderId
 
@@ -30,10 +27,6 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
 
     fun bookOrder(orderId: UUID): OrderBookedEvent {
         return OrderBookedEvent(orderId)
-    }
-
-    fun updateDeliverySlot(orderId: UUID, slotInSec: Int): OrderDeliverySlotUpdatedEvent {
-        return OrderDeliverySlotUpdatedEvent(orderId, slotInSec)
     }
 
     @StateTransitionFunc
@@ -52,8 +45,4 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
         status = OrderStatus.BOOKED
     }
 
-    @StateTransitionFunc
-    fun updateDeliverySlot(event: OrderDeliverySlotUpdatedEvent) {
-        deliveryDuration = event.slotInSec
-    }
 }

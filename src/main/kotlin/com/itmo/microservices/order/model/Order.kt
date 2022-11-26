@@ -8,15 +8,7 @@ class OrderDto {
     var status: OrderStatus = OrderStatus.COLLECTING
     var itemsMap: Map<UUID, Int> = mutableMapOf()
     var deliveryDuration: Int? = null
-    var paymentHistory: List<PaymentLogRecord> = mutableListOf()
 }
-
-data class PaymentLogRecord(
-    val timestamp: Long,
-    val status: PaymentStatus,
-    val amount: Int,
-    val transactionId: UUID,
-)
 
 class OrderItem {
     lateinit var id: UUID
@@ -41,9 +33,4 @@ enum class OrderStatus {
     SHIPPING,
     REFUND,
     COMPLETED
-}
-
-enum class PaymentStatus {
-    SUCCESS,
-    FAILED
 }

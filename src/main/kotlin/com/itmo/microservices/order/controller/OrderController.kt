@@ -34,11 +34,4 @@ class OrderController(
         @PathVariable("order_id") orderId: UUID,
         @RequestHeader(AUTHORIZATION) auth: String,
     ) = orderEsService.update(orderId) { it.bookOrder(orderId) }
-
-    @PostMapping("/{order_id}/delivery")
-    fun updateDeliverySlot(
-        @PathVariable("order_id") orderId: UUID,
-        @RequestParam("slot_in_sec") slotInSec: Int,
-        @RequestHeader(AUTHORIZATION) auth: String,
-    ) = orderEsService.update(orderId) { it.updateDeliverySlot(orderId, slotInSec) }
 }
