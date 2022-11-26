@@ -1,6 +1,9 @@
 package com.itmo.microservices.order.logic
 
-import com.itmo.microservices.order.api.*
+import com.itmo.microservices.order.api.ItemAddedToOrderEvent
+import com.itmo.microservices.order.api.OrderAggregate
+import com.itmo.microservices.order.api.OrderBookedEvent
+import com.itmo.microservices.order.api.OrderCreatedEvent
 import com.itmo.microservices.order.model.OrderStatus
 import ru.quipy.core.annotations.StateTransitionFunc
 import ru.quipy.domain.AggregateState
@@ -15,9 +18,14 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
     private var orderItemsAmount: MutableMap<UUID, Int> = mutableMapOf()
 
     override fun getId() = orderId
+    fun getUserId() = userId
+
+    fun getOrderItemsAmount() = orderItemsAmount
+
+    fun getStatus() = status
 
     fun createOrder(auth: String): OrderCreatedEvent {
-        val userId = UUID.randomUUID() // todo get user from auth
+        val userId = UUID.fromString(auth) // todo get user from auth
         return OrderCreatedEvent(UUID.randomUUID(), userId)
     }
 
