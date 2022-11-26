@@ -14,7 +14,6 @@ const val ORDER_PAID = "ORDER_PAID_EVENT"
 const val ORDER_DELIVERY_STARTED = "ORDER_DELIVERY_STARTED_EVENT"
 const val ORDER_DELIVERY_FAILED = "ORDER_DELIVERY_FAILED_EVENT"
 const val ORDER_DELIVERY_COMPLETED = "ORDER_DELIVERY_COMPLETED_EVENT"
-const val ORDER_DELIVERY_SLOT_UPDATED = "ORDER_DELIVERY_SLOT_UPDATED_EVENT"
 
 @DomainEvent(name = ORDER_CREATED)
 data class OrderCreatedEvent(
@@ -56,20 +55,20 @@ data class OrderBookingCanceledEvent(
     name = ORDER_BOOKING_CANCELED
 )
 
-// @DomainEvent(name = ORDER_EXPIRED)
-// data class OrderExpiredEvent(
-//    val orderId: UUID,
-// ) : Event<OrderAggregate>(
-//    name = ORDER_EXPIRED
-// )
-//
-// @DomainEvent(name = ORDER_PAID)
-// data class OrderPaidEvent(
-//    val orderId: UUID,
-// ) : Event<OrderAggregate>(
-//    name = ORDER_PAID
-// )
-//
+@DomainEvent(name = ORDER_EXPIRED)
+data class OrderExpiredEvent(
+    val orderId: UUID,
+) : Event<OrderAggregate>(
+    name = ORDER_EXPIRED
+)
+
+@DomainEvent(name = ORDER_PAID)
+data class OrderPaidEvent(
+    val orderId: UUID,
+) : Event<OrderAggregate>(
+    name = ORDER_PAID
+)
+
 @DomainEvent(name = ORDER_DELIVERY_STARTED)
 data class OrderDeliveryStartedEvent(
     val orderId: UUID,

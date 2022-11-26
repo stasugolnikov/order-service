@@ -122,4 +122,31 @@ class OrderAggregateStateTest {
         Assertions.assertEquals(state.getStatus(), OrderStatus.COMPLETED)
     }
 
+    @Test
+    fun expiredOrder() {
+        val createdOrderEvent = orderESService.create {
+            it.createOrder(userId.toString())
+        }
+
+        val deliveryCompletedEvent = orderESService.update(createdOrderEvent.orderId) {
+            it.expiredOrder(createdOrderEvent.orderId)
+        }
+        val state = orderESService.getState(deliveryCompletedEvent.orderId)!!
+
+        Assertions.assertEquals(state.getStatus(), OrderStatus.DISCARD)
+    }
+
+    @Test
+    fun paidOrder() {
+        val createdOrderEvent = orderESService.create {
+            it.createOrder(userId.toString())
+        }
+
+        val deliveryCompletedEvent = orderESService.update(createdOrderEvent.orderId) {
+            it.orderPaid(createdOrderEvent.orderId)
+        }
+        val state = orderESService.getState(deliveryCompletedEvent.orderId)!!
+
+        Assertions.assertEquals(state.getStatus(), OrderStatus.PAID)
+    }
 }
