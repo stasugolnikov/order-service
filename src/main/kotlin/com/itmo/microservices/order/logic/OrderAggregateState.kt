@@ -1,9 +1,6 @@
 package com.itmo.microservices.order.logic
 
-import com.itmo.microservices.order.api.ItemAddedToOrderEvent
-import com.itmo.microservices.order.api.OrderAggregate
-import com.itmo.microservices.order.api.OrderBookedEvent
-import com.itmo.microservices.order.api.OrderCreatedEvent
+import com.itmo.microservices.order.api.*
 import com.itmo.microservices.order.model.OrderStatus
 import ru.quipy.core.annotations.StateTransitionFunc
 import ru.quipy.domain.AggregateState
@@ -33,8 +30,16 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
         return ItemAddedToOrderEvent(orderId, itemId, amount)
     }
 
+    fun deleteItemFromOrder(orderId: UUID, itemId: UUID, amount: Int): ItemRemovedFromOrderEvent {
+        return ItemRemovedFromOrderEvent(orderId, itemId, amount)
+    }
+
     fun bookOrder(orderId: UUID): OrderBookedEvent {
         return OrderBookedEvent(orderId)
+    }
+
+    fun discardOrder(orderId: UUID): OrderBookingCanceledEvent {
+        return OrderBookingCanceledEvent(orderId)
     }
 
     @StateTransitionFunc
@@ -53,4 +58,20 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
         status = OrderStatus.BOOKED
     }
 
+    @StateTransitionFunc
+    fun discardOrder(event: OrderBookingCanceledEvent) {
+        status = OrderStatus.DISCARD
+    }
+
+    @StateTransitionFunc
+    fun removeItem(event: ItemRemovedFromOrderEvent) {
+        val bill =
+            orderItemsAmount[event.itemId] ?: error("Item with id=${event.itemId} not found in order ${event.orderId}")
+        require(event.itemCount <= bill)
+        if (event.itemCount == bill) {
+            orderItemsAmount.remove(event.itemId)
+        } else {
+            orderItemsAmount[event.itemId] = bill - event.itemCount
+        }
+    }
 }
