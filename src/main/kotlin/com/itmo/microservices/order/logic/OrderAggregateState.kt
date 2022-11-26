@@ -37,6 +37,7 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
     fun bookOrder(orderId: UUID): OrderBookedEvent {
         return OrderBookedEvent(orderId)
     }
+
     fun deliveryStartedOrder(orderId: UUID): OrderDeliveryStartedEvent {
         return OrderDeliveryStartedEvent(orderId)
     }
@@ -51,6 +52,14 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
 
     fun discardOrder(orderId: UUID): OrderBookingCanceledEvent {
         return OrderBookingCanceledEvent(orderId)
+    }
+
+    fun expiredOrder(orderId: UUID): OrderExpiredEvent {
+        return OrderExpiredEvent(orderId)
+    }
+
+    fun orderPaid(orderId: UUID): OrderPaidEvent {
+        return OrderPaidEvent(orderId)
     }
 
     @StateTransitionFunc
@@ -78,10 +87,12 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
     fun deliveryFailedOrder(event: OrderDeliveryFailedEvent) {
         status = OrderStatus.REFUND
     }
+
     @StateTransitionFunc
     fun deliveryCompletedOrder(event: OrderDeliveryCompletedEvent) {
         status = OrderStatus.COMPLETED
     }
+
     @StateTransitionFunc
     fun discardOrder(event: OrderBookingCanceledEvent) {
         status = OrderStatus.DISCARD
@@ -97,5 +108,15 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
         } else {
             orderItemsAmount[event.itemId] = bill - event.itemCount
         }
+    }
+
+    @StateTransitionFunc
+    fun expiredOrder(event: OrderExpiredEvent) {
+        status = OrderStatus.DISCARD
+    }
+
+    @StateTransitionFunc
+    fun orderPaid(event: OrderPaidEvent) {
+        status = OrderStatus.PAID
     }
 }
