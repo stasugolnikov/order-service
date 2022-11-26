@@ -63,6 +63,7 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
         status = OrderStatus.DISCARD
     }
 
+    @StateTransitionFunc
     fun removeItem(event: ItemRemovedFromOrderEvent) {
         val bill =
             orderItemsAmount[event.itemId] ?: error("Item with id=${event.itemId} not found in order ${event.orderId}")
