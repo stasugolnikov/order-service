@@ -2,7 +2,9 @@ package com.itmo.microservices.order.controller
 
 import com.itmo.microservices.order.api.OrderAggregate
 import com.itmo.microservices.order.logic.OrderAggregateState
+import com.itmo.microservices.order.model.AppUser
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import ru.quipy.core.EventSourcingService
 import java.util.*
@@ -13,13 +15,19 @@ class OrderController(
     val orderEsService: EventSourcingService<UUID, OrderAggregate, OrderAggregateState>
 ) {
     @PostMapping
-    fun createOrder(@RequestHeader(AUTHORIZATION) auth: String) = orderEsService.create { it.createOrder(auth) }
+    fun createOrder(@AuthenticationPrincipal app: AppUser) {
+        println(app)
+        //orderEsService.create { it.createOrder(auth) }
+    }
 
     @GetMapping("/{order_id}")
     fun getOrder(
         @PathVariable("order_id") orderId: UUID,
-        @RequestHeader(AUTHORIZATION) auth: String
-    ) = orderEsService.getState(orderId)
+        @AuthenticationPrincipal app: AppUser
+    ) {
+        println(app.id)
+       // orderEsService.getState(orderId)
+    }
 
     @PutMapping("/orders/{order_id}/items/{item_id}")
     fun addItemToOrder(
