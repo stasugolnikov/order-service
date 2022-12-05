@@ -21,20 +21,22 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
 
     fun getStatus() = status
 
-    fun createOrder(auth: String): OrderCreatedEvent {
-        val userId = UUID.fromString(auth) // todo get user from auth
+    fun createOrder(userId: UUID): OrderCreatedEvent {
         return OrderCreatedEvent(UUID.randomUUID(), userId)
     }
 
-    fun addItemToOrder(orderId: UUID, itemId: UUID, amount: Int): ItemAddedToOrderEvent {
+    fun addItemToOrder(orderId: UUID, itemId: UUID, amount: Int, userId: UUID): ItemAddedToOrderEvent {
+        checkUser(userId)
         return ItemAddedToOrderEvent(orderId, itemId, amount)
     }
 
-    fun deleteItemFromOrder(orderId: UUID, itemId: UUID, amount: Int): ItemRemovedFromOrderEvent {
+    fun deleteItemFromOrder(orderId: UUID, itemId: UUID, amount: Int, userId: UUID): ItemRemovedFromOrderEvent {
+        checkUser(userId)
         return ItemRemovedFromOrderEvent(orderId, itemId, amount)
     }
 
-    fun bookOrder(orderId: UUID): OrderBookedEvent {
+    fun bookOrder(orderId: UUID, userId: UUID): OrderBookedEvent {
+        checkUser(userId)
         return OrderBookedEvent(orderId)
     }
 
@@ -60,6 +62,11 @@ class OrderAggregateState : AggregateState<UUID, OrderAggregate> {
 
     fun orderPaid(orderId: UUID): OrderPaidEvent {
         return OrderPaidEvent(orderId)
+    }
+
+    fun checkUser(userId: UUID) {
+        if (this.userId != userId)
+            throw RuntimeException("Нет доступа")//todo переделать в подходящий exception
     }
 
     @StateTransitionFunc
