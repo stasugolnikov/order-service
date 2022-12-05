@@ -1,6 +1,7 @@
 package com.itmo.microservices.order.security
 
 import com.itmo.microservices.order.config.props.SecurityProperties
+import com.itmo.microservices.order.model.user.UserRole
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
@@ -19,6 +20,7 @@ class JwtUtil(private val securityProperties: SecurityProperties) {
             claims.get("userId", String::class.java)
                 ?: throw IllegalArgumentException("userId is null")
         )
-        return AuthToken(userId)
+        val role: UserRole = UserRole.valueOf(claims["role", String::class.java])
+        return AuthToken(userId, role)
     }
 }

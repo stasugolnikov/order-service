@@ -21,9 +21,7 @@ class JwtRequestFilter : OncePerRequestFilter() {
         res: HttpServletResponse,
         chain: FilterChain
     ) {
-
         readTokenIfProvided(req)
-
         chain.doFilter(req, res)
     }
 
@@ -33,6 +31,5 @@ class JwtRequestFilter : OncePerRequestFilter() {
         val token = tokenString.substring("Bearer ".length)
         val authToken = jwtUtil!!.readToken(token)
         SecurityContextHolder.getContext().authentication = authToken.createAuthentication()
-
     }
 }
