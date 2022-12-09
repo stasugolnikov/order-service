@@ -1,0 +1,39 @@
+spring:
+  main:
+    allow-bean-definition-overriding: 'true'
+  data:
+    mongodb:
+      port: 27017
+      host: localhost
+      username: root
+      password: rootpassword
+      authentication-database: admin
+
+security:
+  tokenTtl: 1d
+  secret: ${SECURITY_SECRET}
+
+event:
+  sourcing:
+    snapshot-frequency: '100'
+    scan-package: com.itmo.microservices.order
+    auto-scan-enabled: 'true'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: 'true'
+      defaults:
+        enabled: 'false'
+    tags:
+      application: ${spring.application.name}
+  endpoint:
+    health:
+      probes:
+        enabled: 'true'
+

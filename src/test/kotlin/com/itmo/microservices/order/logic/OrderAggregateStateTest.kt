@@ -1,21 +1,19 @@
-package com.itmo.microservices.order
+package com.itmo.microservices.order.logic
 
+import com.itmo.microservices.order.BaseIntegrationTest
 import com.itmo.microservices.order.api.OrderAggregate
-import com.itmo.microservices.order.logic.OrderAggregateState
 import com.itmo.microservices.order.model.OrderStatus
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import ru.quipy.core.EventSourcingService
 import java.util.*
 
-@SpringBootTest
-class OrderAggregateStateTest {
+class OrderAggregateStateTest : BaseIntegrationTest() {
 
     companion object {
         private val testId = UUID.randomUUID()
@@ -43,7 +41,7 @@ class OrderAggregateStateTest {
     @Test
     fun createOrder() {
         val event = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val state = orderESService.getState(event.orderId)!!
@@ -55,11 +53,11 @@ class OrderAggregateStateTest {
     @Test
     fun addItemToOrder() {
         val createdOrderEvent = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val addItemToOrder = orderESService.update(createdOrderEvent.orderId) {
-            it.addItemToOrder(createdOrderEvent.orderId, itemId, itemAmount)
+            it.addItemToOrder(createdOrderEvent.orderId, itemId, itemAmount, userId)
         }
         val state = orderESService.getState(addItemToOrder.orderId)!!
 
@@ -69,11 +67,11 @@ class OrderAggregateStateTest {
     @Test
     fun bookOrder() {
         val createdOrderEvent = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val bookOrderEvent = orderESService.update(createdOrderEvent.orderId) {
-            it.bookOrder(createdOrderEvent.orderId)
+            it.bookOrder(createdOrderEvent.orderId, userId)
         }
         val state = orderESService.getState(bookOrderEvent.orderId)!!
 
@@ -83,7 +81,7 @@ class OrderAggregateStateTest {
     @Test
     fun deliveryStartedOrder() {
         val createdOrderEvent = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val deliveryStartedEvent = orderESService.update(createdOrderEvent.orderId) {
@@ -97,7 +95,7 @@ class OrderAggregateStateTest {
     @Test
     fun deliveryFailedOrder() {
         val createdOrderEvent = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val deliveryFailedEvent = orderESService.update(createdOrderEvent.orderId) {
@@ -111,7 +109,7 @@ class OrderAggregateStateTest {
     @Test
     fun deliveryCompletedOrder() {
         val createdOrderEvent = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val deliveryCompletedEvent = orderESService.update(createdOrderEvent.orderId) {
@@ -125,7 +123,7 @@ class OrderAggregateStateTest {
     @Test
     fun expiredOrder() {
         val createdOrderEvent = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val deliveryCompletedEvent = orderESService.update(createdOrderEvent.orderId) {
@@ -139,7 +137,7 @@ class OrderAggregateStateTest {
     @Test
     fun paidOrder() {
         val createdOrderEvent = orderESService.create {
-            it.createOrder(userId.toString())
+            it.createOrder(userId)
         }
 
         val deliveryCompletedEvent = orderESService.update(createdOrderEvent.orderId) {

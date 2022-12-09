@@ -2,7 +2,7 @@ package com.itmo.microservices.order.controller
 
 import com.itmo.microservices.order.api.OrderAggregate
 import com.itmo.microservices.order.logic.OrderAggregateState
-import com.itmo.microservices.order.model.user.AppUser
+import com.itmo.microservices.order.model.AppUser
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import ru.quipy.core.EventSourcingService

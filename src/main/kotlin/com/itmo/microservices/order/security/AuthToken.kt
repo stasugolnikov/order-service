@@ -1,8 +1,7 @@
 package com.itmo.microservices.order.security
 
-import com.itmo.microservices.order.model.user.AppUser
-import com.itmo.microservices.order.model.user.UserRole
-
+import com.itmo.microservices.order.model.AppUser
+import com.itmo.microservices.order.model.UserRole
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
@@ -13,7 +12,7 @@ import java.util.*
 class AuthToken(val id: UUID, val role: UserRole) {
 
     fun createAuthentication(): Authentication {
-        val authorities: List<GrantedAuthority> = role.getPrecedingAndCurrent().stream()
+        val authorities: List<GrantedAuthority> = role.precedingAndCurrent.stream()
             .map { role -> SimpleGrantedAuthority(ROLE_PREFIX + role.name) }.toList()
 
         return object : AbstractAuthenticationToken(authorities) {
