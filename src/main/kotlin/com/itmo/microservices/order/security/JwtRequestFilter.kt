@@ -1,6 +1,5 @@
 package com.itmo.microservices.order.security
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -11,9 +10,9 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class JwtRequestFilter : OncePerRequestFilter() {
-    @Autowired
-    private val jwtUtil: JwtUtil? = null
+class JwtRequestFilter(
+    private val jwtUtil: JwtUtil
+) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
@@ -29,7 +28,7 @@ class JwtRequestFilter : OncePerRequestFilter() {
         val tokenString = req.getHeader("Authorization")
         if (tokenString == null || !tokenString.startsWith("Bearer ")) return
         val token = tokenString.substring("Bearer ".length)
-        val authToken = jwtUtil!!.readToken(token)
+        val authToken = jwtUtil.readToken(token)
         SecurityContextHolder.getContext().authentication = authToken.createAuthentication()
     }
 }

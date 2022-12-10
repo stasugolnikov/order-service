@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class JwtUtil(private val securityProperties: SecurityProperties) {
+class JwtUtil(
+    private val securityProperties: SecurityProperties
+) {
 
     fun readToken(token: String?): AuthToken {
         val claims: Claims = Jwts.parserBuilder()
