@@ -1,4 +1,4 @@
-package com.itmo.microservices.order.config.props
+package com.itmo.microservices.order.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
@@ -19,6 +19,4 @@ data class SecurityProperties(
 
     @DurationUnit(ChronoUnit.DAYS)
     val tokenTtl: Duration
-) {
-
-}
+)
